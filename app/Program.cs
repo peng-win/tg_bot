@@ -1,4 +1,4 @@
-using app;
+п»їusing app;
 using Microsoft.Extensions.Options;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
@@ -47,7 +47,7 @@ async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, Cancel
 
     Message sentMessage = await bot.SendTextMessageAsync(
         chatId: chatId,
-        text: "Вы сказали: " + messageText,
+        text: "Р’С‹ СЃРєР°Р·Р°Р»Рё: " + messageText,
         cancellationToken: cancellationToken);
 }
 
