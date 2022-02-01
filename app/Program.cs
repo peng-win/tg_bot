@@ -7,7 +7,7 @@ using Telegram.Bot.Types;
 
 
 var builder = WebApplication.CreateBuilder(args);
-
+/*
 #pragma warning disable ASP0000 // Do not call 'IServiceCollection.BuildServiceProvider' in 'ConfigureServices'
 var provider = builder.Services.BuildServiceProvider();
 #pragma warning restore ASP0000 // Do not call 'IServiceCollection.BuildServiceProvider' in 'ConfigureServices'
@@ -61,7 +61,7 @@ Task HandleErrorAsync(ITelegramBotClient botClient, Exception exception, Cancell
     };
     Console.WriteLine(errorMessage);
     return Task.CompletedTask;
-}
+}*/
 
 
 
@@ -86,4 +86,28 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+
+var startup = new Startup1(builder.Configuration);
+
+startup.ConfigureServices(builder.Services);
+
+
+
+startup.Configure(app, app.Environment);
+
 app.Run();
+
+static void Main(string[] args)
+{
+
+    CreateHostBuilder(args).Build().Run();
+}
+
+
+static IHostBuilder CreateHostBuilder(string[] args) =>
+    Host.CreateDefaultBuilder(args)
+    .ConfigureWebHostDefaults(webBuilder =>
+    {
+        webBuilder.UseStartup<Startup1>();
+    }).ConfigureServices(services => services.AddHostedService<MyBackgroundService>());
+
