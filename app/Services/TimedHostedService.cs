@@ -6,36 +6,24 @@ using Telegram.Bot.Types;
 namespace app.Services
 {
   
-    public class TimedHostedService : IHostedService, IDisposable
+    public class TimedHostedService : IHostedService
     {
         private readonly ILogger<TimedHostedService> _logger;
-        private Timer _timer = null!;
+        private readonly IConfiguration _configuration;
         private string[] args;
 
-        public TimedHostedService(ILogger<TimedHostedService> logger)
+        public TimedHostedService(ILogger<TimedHostedService> logger, IConfiguration configuration)
         {
             _logger = logger;
+            _configuration = configuration;
         }
 
         public Task StartAsync(CancellationToken stoppingToken)
         {
             _logger.LogInformation("Timed Hosted Service running.");
 
-            _timer = new Timer(DoWork, null, TimeSpan.Zero,
-                TimeSpan.FromSeconds(5));
-
-            return Task.CompletedTask;
-        }
-
-        private async void DoWork(object? state)
-        {
-            var builder = WebApplication.CreateBuilder(args);
-
-            var provider = builder.Services.BuildServiceProvider();
-
-            var config = provider.GetRequiredService<IConfiguration>();
-
-            var token = config.GetValue<string>("token");
+          
+            var token = _configuration.GetValue<string>("token");
 
             var bot = new TelegramBotClient(token);
 
@@ -51,12 +39,10 @@ namespace app.Services
             cancellationToken: cts.Token);
 
 
-            var me = await bot.GetMeAsync();
-            Console.WriteLine($"Start listening for @{me.Username}");
-            Console.ReadLine();
-
-            cts.Cancel();
+           // var me = await bot.GetMeAsync();
+            return Task.CompletedTask;
         }
+        
         async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             if (update.Type != Telegram.Bot.Types.Enums.UpdateType.Message)
@@ -89,17 +75,12 @@ namespace app.Services
 
         public Task StopAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("Hosted Service is stopping.");
-
-            _timer?.Change(Timeout.Infinite, 0);
+            _logger.LogInformation("Hosted Service is stopping.");            
 
             return Task.CompletedTask;
         }
 
-        public void Dispose()
-        {
-            _timer?.Dispose();
-        }
+        
     }
     
 }
