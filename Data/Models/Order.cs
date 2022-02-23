@@ -4,15 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Data.Entities
+namespace Data.Models
 {
-    public class OrdersEntity : BaseEntity
+    public class Order
     {
         public int OrderId { get; set; }
-        public string UserId { get; set; }
-        public string UserAddress { get; set; }
-        public string UserComment { get; set; }
+        public int UserId { get; set; }
+        public string Address { get; set; }
+        public decimal Price { get; set; }
+        public string Description { get; set; }
         public string PaymentType { get; set; }
-
     }
 }

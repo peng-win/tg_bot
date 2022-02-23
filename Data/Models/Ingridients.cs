@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Data.Entities
+namespace Data.Models
 {
-    public class IngridientsEntity : BaseEntity
+    public class Ingridients
     {
         public int IngridientId { get; set; }
-        public string IngridientName { get; set; }
+        public string Ingridient { get; set; }
     }
 }
