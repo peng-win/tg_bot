@@ -5,52 +5,21 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 using Telegram.Bot.Types.InlineQueryResults;
 using Npgsql;
-using Core;
-using Dapper;
 
 namespace app.Services
 {
-  
-    public class TimedHostedService : IHostedService
-    {
-        private readonly ILogger<TimedHostedService> _logger;
-        private readonly IConfiguration _configuration;
-        
-        private string[] args;
-        
-
-        public TimedHostedService(ILogger<TimedHostedService> logger, IConfiguration configuration)
+    public class CallMenu
+    { /*
+        private string _token;
+        private string _connection;
+        TelegramBotClient _client;
+        public CallMenu(string connection, string token)
         {
-            _logger = logger;
-            _configuration = configuration;
+            this._connection = connection;
+            this._token = token;
         }
-
-        public Task StartAsync(CancellationToken stoppingToken)
-        {
-            _logger.LogInformation("Timed Hosted Service running.");
-
-          
-            var token = _configuration.GetValue<string>("token");
-
-            var bot = new TelegramBotClient(token);
-
-
-            using var cts = new CancellationTokenSource();
-
-            var receiverOptions = new ReceiverOptions { AllowedUpdates = { } };
-
-            bot.StartReceiving(
-            HandleUpdateAsync,
-            HandleErrorAsync,
-            receiverOptions,
-            cancellationToken: cts.Token);
-
-
-           // var me = await bot.GetMeAsync();
-            return Task.CompletedTask;
-        }
-        
-        async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+               
+        static async Task CallMenuTask(Update update, CancellationToken cancellationToken, TelegramBotClient botClient)
         {
             var chatId = update.Message.Chat.Id;
             var messageText = update.Message.Text;
@@ -73,7 +42,7 @@ namespace app.Services
                         })
                     {
                         ResizeKeyboard = true
-                    };
+                    };                    
 
                     while (npgsqlDataReader.Read())
                     {
@@ -112,38 +81,6 @@ namespace app.Services
                     Console.WriteLine("Error: " + ex);
                 }
             }
-        
-        /*
-        try
-        {
-
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("Error: " + ex);
         }*/
-        }        
-
-        Task HandleErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
-        {
-            var errorMessage = exception switch
-            {
-                ApiRequestException apiRequestException
-                => $"Telegram API Error:\n[{apiRequestException.ErrorCode}]\n{apiRequestException.Message}",
-                _ => exception.ToString()
-            };
-            Console.WriteLine(errorMessage);
-            return Task.CompletedTask;
-        }
-
-        public Task StopAsync(CancellationToken stoppingToken)
-        {
-            _logger.LogInformation("Hosted Service is stopping.");            
-
-            return Task.CompletedTask;
-        }
-
-        
     }
-    
 }
