@@ -10,11 +10,10 @@ namespace Data.Models
 {
     public class User
     {
-        public int UserId { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Patronymic { get; set; }
+        public Guid Id { get; set; }
+        public string FIO { get; set; }
         public string Phone { get; set; }
+        public string Status { get; set; }
     }
     /*
     public int InsertWithSql()

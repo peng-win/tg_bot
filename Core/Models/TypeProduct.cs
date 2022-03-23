@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Data.Models
+namespace Core.Models
 {
-    public class SizePizza
+    public class TypeProduct
     {
-        public int SizeId { get; set; } 
-        public string Size { get; set; }
+        public int Id { get; set; }
+        public string Type { get; set; }
     }
 }

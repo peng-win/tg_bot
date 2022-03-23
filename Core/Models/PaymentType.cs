@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Data.Models
 {
-    public class Ingridients
+    public class PaymentType
     {
-        public int IngridientId { get; set; }
-        public string Ingridient { get; set; }
+        public int Id { get; set; }
+        public string Type { get; set; }
     }
 }
