@@ -19,6 +19,6 @@ namespace Migrations
             _configuration = configuration;
         }
         public IDbConnection CreateConnection()
-            => new NpgsqlConnection(_configuration.GetConnectionString("PostreSQLConnection"));
+            => new NpgsqlConnection(_configuration.GetConnectionString("Host=localhost;Username=postgres;Password=4815162342;Database=PizzaDeliveryDb"));
     }
 }
