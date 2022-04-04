@@ -2,8 +2,8 @@
 
 namespace Migrations.Migrations
 {
-    [Migration(202203220001)]
-    public class InitialTables_202203220001 : Migration
+    [Migration(202203290002)]
+    public class UpdateTables_202203290002 : Migration
     {
         public override void Down()
         {
@@ -21,12 +21,24 @@ namespace Migrations.Migrations
         }
 
         public override void Up()
-        {
+        {          
+            Delete.Table("Order");
+            Delete.Table("Menu");
+            Delete.Table("User");
+            Delete.Table("UserStatus");
+            Delete.Table("OrderStatus");
+            Delete.Table("Unit");
+            Delete.Table("Ingridients");
+            Delete.Table("TypeProduct");
+            Delete.Table("PaymentType");
+            Delete.Table("SizeProduct");
+            Delete.Table("Products");
+
             Create.Table("Ingridients")
-                .WithColumn("Id").AsGuid().NotNullable().PrimaryKey()
-                .WithColumn("Name").AsString(30).NotNullable().Unique()
-                .WithColumn("WeightInGrams").AsDouble().Nullable()
-                .WithColumn("Price").AsDecimal().NotNullable();
+                 .WithColumn("Id").AsGuid().NotNullable().PrimaryKey()
+                 .WithColumn("Name").AsString(30).NotNullable().Unique()
+                 .WithColumn("WeightInGrams").AsDouble().Nullable()
+                 .WithColumn("Price").AsDecimal().NotNullable();
 
             Create.Table("TypeProduct")
                 .WithColumn("Id").AsGuid().NotNullable().PrimaryKey()
@@ -75,8 +87,6 @@ namespace Migrations.Migrations
                 .WithColumn("Description").AsString(1000).Nullable()
                 .WithColumn("PaymentType").AsString(20).NotNullable().ForeignKey("PaymentType", "Type")
                 .WithColumn("Status").AsString(20).NotNullable();
-
-
         }
     }
 }

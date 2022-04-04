@@ -4,20 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Data.Models
+namespace Core.Models
 {
     public class Order
     {
         public Guid Id { get; set; }
-        public int UserId { get; set; }
-        public string Product1 { get; set; }
-        public string Product2 { get; set; }
-        public string Product3 { get; set; }
-        public string Product4 { get; set; }
-        public string Product5 { get; set; }
+        public Guid UserId { get; set; }
+        public string ProductIds { get; set; }
         public string Address { get; set; }
         public decimal Price { get; set; }
         public DateTime DateOfCreation { get; set; }    
+        public DateTime DateOfCompletion { get; set; }    
         public string Description { get; set; }
         public string PaymentType { get; set; }
         public string Status { get; set; }

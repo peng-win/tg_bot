@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace Core.Models
 {
-    public class UserStatus
+    public class SizeProduct
     {
-        public int Id { get; set; }
-        public string Status { get; set; }
+        public Guid Id { get; set; } 
+        public double Size { get; set; }
+        public string Unit { get; set; }
     }
 }

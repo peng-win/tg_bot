@@ -19,7 +19,7 @@ namespace Migrations.Extensions
                     databaseService.CreateDatabase("PizzaDeliveryDb");
 
                     migrationService.ListMigrations();
-                    migrationService.MigrateUp(202203220001);
+                    migrationService.MigrateDown(202203220001);
                 }
                 catch (Exception ex)
                 {

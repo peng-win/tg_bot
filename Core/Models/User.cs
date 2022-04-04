@@ -6,13 +6,16 @@ using System.Threading.Tasks;
 using Dapper;
 using Npgsql;
 
-namespace Data.Models
+namespace Core.Models
 {
     public class User
     {
         public Guid Id { get; set; }
-        public string FIO { get; set; }
+        public string Name { get; set; }
+        public string LastName { get; set; }
+        public string Patronymic { get; set; }
         public string Phone { get; set; }
+        public DateTime RegistrationDate { get; set; }
         public string Status { get; set; }
     }
     /*
