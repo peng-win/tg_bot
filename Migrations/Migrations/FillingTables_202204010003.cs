@@ -23,6 +23,16 @@ namespace Migrations.Migrations
 
         public override void Up()
         {
+            Delete.Column("TypeProduct").FromTable("Menu");
+            Delete.Column("Description").FromTable("Menu");
+            Delete.Column("Picture").FromTable("Menu");
+
+            Delete.Column("Picture").FromTable("Products");
+
+            Create.Column("TypeProduct").OnTable("Products").AsString(20).NotNullable().ForeignKey("TypeProduct", "Type");
+            Create.Column("Description").OnTable("Products").AsString(1000).Nullable();
+            Create.Column("Picture").OnTable("Products").AsString(1000).Nullable();
+
             Insert.IntoTable("TypeProduct")
                 .Row(new { Id = Guid.NewGuid(), Type = "Пицца" })
                 .Row(new { Id = Guid.NewGuid(), Type = "Десерты" })

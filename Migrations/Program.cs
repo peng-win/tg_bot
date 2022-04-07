@@ -24,7 +24,7 @@ namespace Migrations
 				.ConfigureRunner(rb => rb
 					.AddPostgres11_0()
 					.WithGlobalConnectionString(connectionString)
-					.ScanIn(typeof(UpdateTables_202204030005).Assembly).For.Migrations())
+					.ScanIn(typeof(FillingTables_202204040006).Assembly).For.Migrations())
 				.AddLogging(lb => lb.AddFluentMigratorConsole())
 				.BuildServiceProvider(false);
         }
@@ -32,7 +32,7 @@ namespace Migrations
 		private static void UpdateDatabase(IServiceProvider serviceProvider)
         { 
 			var runner = serviceProvider.GetRequiredService<IMigrationRunner>();
-			runner.MigrateUp();
+			runner.MigrateUp(202204040006);
         }
 	}
 }

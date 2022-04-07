@@ -1,14 +1,15 @@
 ﻿using Telegram.Bot;
 using Telegram.Bot.Extensions.Polling;
 using Telegram.Bot.Types;
-
+using Dapper;
 using Telegram.Bot.Requests.Abstractions;
 using Npgsql;
 using Telegram.Bot.Types.ReplyMarkups;
 using Core.Interfaces;
 using Microsoft.Extensions.Configuration;
+using System.Data;
 
-namespace Core
+namespace Core.Services
 {
     public class CallMenu : ICallMenu
     {
@@ -22,68 +23,186 @@ namespace Core
         {
             var chatId = update.Message.Chat.Id;
             var messageText = update.Message.Text;
-            using (var connection = new NpgsqlConnection(_configuration.GetConnectionString("PostreSQLConnection")))
+            using (IDbConnection db = new NpgsqlConnection(_configuration.GetConnectionString("PostreSQLConnection")))
             {
                 try
                 {
+                    db.Open();
 
-                    connection.Open();
-                    NpgsqlCommand npgsqlCommand = connection.CreateCommand();
-                    npgsqlCommand.CommandText = "SELECT * FROM menutbl";
-                    NpgsqlDataReader npgsqlDataReader = npgsqlCommand.ExecuteReader();
-
-                    List<string[]> data = new List<string[]>();
-
-                    ReplyKeyboardMarkup keyboard = new(new[]
+                    ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup(new[]
+                    {                        
+                        new [] 
                         {
-                            new KeyboardButton[] { "Меню" },
-                        })
+                            new KeyboardButton("Пицца"),
+                            new KeyboardButton("Напитки")
+                        },
+                        new[] 
+                        {
+                            new KeyboardButton("Десерты"),
+                            new KeyboardButton("Закуски")
+                        }
+                    })
                     {
                         ResizeKeyboard = true
                     };
 
-                    while (npgsqlDataReader.Read())
+                    var limit = 1;
+                    var offset = 0;
+                    var sql = "";
+                    var photo = "";
+                    switch(messageText)
                     {
-                        data.Add(new string[10]);
+                        case "Пицца":
+                            while (sql != null)
+                            {
+                                sql = db.Query<string>($"SELECT \"Product\" FROM \"Products\" WHERE \"TypeProduct\"='{messageText}' limit {limit} offset {offset}").SingleOrDefault();
+                                photo = db.Query<string>($"SELECT \"Picture\" FROM \"Products\" WHERE \"TypeProduct\"='{messageText}' limit {limit} offset {offset}").SingleOrDefault();
+                                Message Message = await botClient.SendPhotoAsync(
+                                    chatId: chatId,
+                                    photo: photo.ToString(),
+                                    caption: sql.ToString(),
+                                    replyMarkup: keyboard,
+                                    cancellationToken: cancellationToken);
+                                offset++;
+                            }
+                            break;
 
-                        data[data.Count - 1][0] = npgsqlDataReader[0].ToString();
-                        data[data.Count - 1][1] = npgsqlDataReader[1].ToString();
-                        data[data.Count - 1][2] = npgsqlDataReader[2].ToString();
-                        data[data.Count - 1][3] = npgsqlDataReader[3].ToString();
-                        data[data.Count - 1][4] = npgsqlDataReader[4].ToString();
-                        data[data.Count - 1][5] = npgsqlDataReader[5].ToString();
-                        data[data.Count - 1][6] = npgsqlDataReader[6].ToString();
-                        data[data.Count - 1][7] = npgsqlDataReader[7].ToString();
-                        data[data.Count - 1][8] = npgsqlDataReader[8].ToString();
-                        data[data.Count - 1][9] = npgsqlDataReader[9].ToString();
+                        case "Напитки":
+                            while (sql != null)
+                            {
+                                sql = db.Query<string>($"SELECT \"Product\" FROM \"Products\" WHERE \"TypeProduct\"='{messageText}' limit {limit} offset {offset}").SingleOrDefault();
+                                photo = db.Query<string>($"SELECT \"Picture\" FROM \"Products\" WHERE \"TypeProduct\"='{messageText}' limit {limit} offset {offset}").SingleOrDefault();
+                                Message Message = await botClient.SendPhotoAsync(
+                                    chatId: chatId,
+                                    photo: photo.ToString(),
+                                    caption: sql.ToString(),
+                                    replyMarkup: keyboard,
+                                    cancellationToken: cancellationToken);
+                                offset++;
+                            }
+                            break;
+
+                        case "Десерты":
+                            while (sql != null)
+                            {
+                                sql = db.Query<string>($"SELECT \"Product\" FROM \"Products\" WHERE \"TypeProduct\"='{messageText}' limit {limit} offset {offset}").SingleOrDefault();
+                                photo = db.Query<string>($"SELECT \"Picture\" FROM \"Products\" WHERE \"TypeProduct\"='{messageText}' limit {limit} offset {offset}").SingleOrDefault();
+                                Message Message = await botClient.SendPhotoAsync(
+                                    chatId: chatId,
+                                    photo: photo.ToString(),
+                                    caption: sql.ToString(),
+                                    replyMarkup: keyboard,
+                                    cancellationToken: cancellationToken);
+                                offset++;
+                            }
+                            break;
+
+                        case "Закуски":
+                            while (sql != null)
+                            {
+                                sql = db.Query<string>($"SELECT \"Product\" FROM \"Products\" WHERE \"TypeProduct\"='{messageText}' limit {limit} offset {offset}").SingleOrDefault();
+                                photo = db.Query<string>($"SELECT \"Picture\" FROM \"Products\" WHERE \"TypeProduct\"='{messageText}' limit {limit} offset {offset}").SingleOrDefault();
+                                Message Message = await botClient.SendPhotoAsync(
+                                    chatId: chatId,
+                                    photo: photo.ToString(),
+                                    caption: sql.ToString(),
+                                    replyMarkup: keyboard,
+                                    cancellationToken: cancellationToken);
+                                offset++;
+                            }
+                            break;
+
+                        default:
+                            while (sql != null)
+                            {
+                                sql = db.Query<string>($"SELECT \"Product\" FROM \"Products\" WHERE \"TypeProduct\"='{messageText}' limit {limit} offset {offset}").SingleOrDefault();
+                                photo = db.Query<string>($"SELECT \"Picture\" FROM \"Products\" WHERE \"TypeProduct\"='{messageText}' limit {limit} offset {offset}").SingleOrDefault();
+                                Message Message = await botClient.SendPhotoAsync(
+                                    chatId: chatId,
+                                    photo: photo.ToString(),
+                                    caption: sql.ToString(),
+                                    replyMarkup: keyboard,
+                                    cancellationToken: cancellationToken);
+                                offset++;
+                            }
+                            break;
                     }
-                    npgsqlDataReader.Close();
-                    connection.Close();
-                    foreach (string[] s in data)
+                    /*
+                    if (messageText == "Пицца")
                     {
-
-                        InlineKeyboardMarkup inlineKeyboard = new(new[]
+                        while (sql != null)
                         {
-                                new []
-                                {
-                                    InlineKeyboardButton.WithCallbackData(text: $"{s[2].ToString()} | {s[3].ToString()}", callbackData: "11"),
-                                    InlineKeyboardButton.WithCallbackData(text: $"{s[4].ToString()} | {s[5].ToString()}", callbackData: "11"),
-                                    InlineKeyboardButton.WithCallbackData(text: $"{s[6].ToString()} | {s[7].ToString()}", callbackData: "11"),
-                                },
-                            });
-                        /*
-                        Message Message1 = await botClient.SendTextMessageAsync(
-                            chatId: chatId,
-                            text: s[1].ToString(),
-                            replyMarkup: inlineKeyboard,
-                            cancellationToken: cancellationToken);*/
-                        Message Message = await botClient.SendPhotoAsync(
-                            chatId: chatId,
-                            photo: s[9].ToString(),
-                            caption: s[1].ToString(),
-                            replyMarkup: inlineKeyboard,
-                            cancellationToken: cancellationToken);
-                    }
+                            sql = db.Query<string>($"SELECT \"Product\" FROM \"Products\" WHERE \"TypeProduct\"='{messageText}' limit {limit} offset {offset}").SingleOrDefault();
+
+                            Message Message1 = await botClient.SendTextMessageAsync(
+                                chatId: chatId,
+                                text: sql.ToString(),
+                                replyMarkup: keyboard,
+                                cancellationToken: cancellationToken);
+                            offset++;
+                        }
+                    } else if (messageText == "Напитки")
+                    {
+                        while (sql != null)
+                        {
+                            sql = db.Query<string>($"SELECT \"Product\" FROM \"Products\" WHERE \"TypeProduct\"='{messageText}' limit {limit} offset {offset}").SingleOrDefault();
+
+                            Message Message1 = await botClient.SendTextMessageAsync(
+                                chatId: chatId,
+                                text: sql.ToString(),
+                                replyMarkup: keyboard,
+                                cancellationToken: cancellationToken);
+                            offset++;
+                        }
+                    } else if (messageText == "Десерты")
+                    {
+                        while (sql != null)
+                        {
+                            sql = db.Query<string>($"SELECT \"Product\" FROM \"Products\" WHERE \"TypeProduct\"='{messageText}' limit {limit} offset {offset}").SingleOrDefault();
+
+                            Message Message1 = await botClient.SendTextMessageAsync(
+                                chatId: chatId,
+                                text: sql.ToString(),
+                                replyMarkup: keyboard,
+                                cancellationToken: cancellationToken);
+                            offset++;
+                        }
+                    } else if (messageText == "Закуски")
+                    {
+                        while (sql != null)
+                        {
+                            sql = db.Query<string>($"SELECT \"Product\" FROM \"Products\" WHERE \"TypeProduct\"='{messageText}' limit {limit} offset {offset}").SingleOrDefault();
+
+                            Message Message1 = await botClient.SendTextMessageAsync(
+                                chatId: chatId,
+                                text: sql.ToString(),
+                                replyMarkup: keyboard,
+                                cancellationToken: cancellationToken);
+                            offset++;
+                        }
+                    } else
+                    {
+                        while (sql != null)
+                        {
+                            sql = db.Query<string>($"SELECT \"Product\" FROM \"Products\" limit {limit} offset {offset}").SingleOrDefault();
+
+                            Message Message1 = await botClient.SendTextMessageAsync(
+                                chatId: chatId,
+                                text: sql.ToString(),
+                                replyMarkup: keyboard,
+                                cancellationToken: cancellationToken);
+                            offset++;
+                        }
+                    }*/
+                       
+                        
+                    
+                    
+                    
+                    //dynamic sql = conn.Query("SELECT Product FROM Menu").ToString();
+                    
+                                             
+                    db.Close();
 
                 }
                 catch (Exception ex)
