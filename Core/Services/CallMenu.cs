@@ -49,20 +49,23 @@ namespace Core.Services
                     var limit = 1;
                     var offset = 0;
                     var sql = "";
-                    var photo = "";
-                    switch(messageText)
+                    var photo = "";                   
+
+                    switch (messageText)
                     {
                         case "Пицца":
                             while (sql != null)
                             {
                                 sql = db.Query<string>($"SELECT \"Product\" FROM \"Products\" WHERE \"TypeProduct\"='{messageText}' limit {limit} offset {offset}").SingleOrDefault();
                                 photo = db.Query<string>($"SELECT \"Picture\" FROM \"Products\" WHERE \"TypeProduct\"='{messageText}' limit {limit} offset {offset}").SingleOrDefault();
+                                                                
                                 Message Message = await botClient.SendPhotoAsync(
                                     chatId: chatId,
                                     photo: photo.ToString(),
                                     caption: sql.ToString(),
-                                    replyMarkup: keyboard,
+                                    replyMarkup: keyboard,                                     
                                     cancellationToken: cancellationToken);
+
                                 offset++;
                             }
                             break;
@@ -72,27 +75,32 @@ namespace Core.Services
                             {
                                 sql = db.Query<string>($"SELECT \"Product\" FROM \"Products\" WHERE \"TypeProduct\"='{messageText}' limit {limit} offset {offset}").SingleOrDefault();
                                 photo = db.Query<string>($"SELECT \"Picture\" FROM \"Products\" WHERE \"TypeProduct\"='{messageText}' limit {limit} offset {offset}").SingleOrDefault();
+                                
                                 Message Message = await botClient.SendPhotoAsync(
                                     chatId: chatId,
                                     photo: photo.ToString(),
                                     caption: sql.ToString(),
                                     replyMarkup: keyboard,
                                     cancellationToken: cancellationToken);
+
                                 offset++;
                             }
                             break;
 
                         case "Десерты":
+
                             while (sql != null)
                             {
                                 sql = db.Query<string>($"SELECT \"Product\" FROM \"Products\" WHERE \"TypeProduct\"='{messageText}' limit {limit} offset {offset}").SingleOrDefault();
                                 photo = db.Query<string>($"SELECT \"Picture\" FROM \"Products\" WHERE \"TypeProduct\"='{messageText}' limit {limit} offset {offset}").SingleOrDefault();
+                                
                                 Message Message = await botClient.SendPhotoAsync(
                                     chatId: chatId,
                                     photo: photo.ToString(),
                                     caption: sql.ToString(),
                                     replyMarkup: keyboard,
                                     cancellationToken: cancellationToken);
+
                                 offset++;
                             }
                             break;
@@ -115,8 +123,8 @@ namespace Core.Services
                         default:
                             while (sql != null)
                             {
-                                sql = db.Query<string>($"SELECT \"Product\" FROM \"Products\" WHERE \"TypeProduct\"='{messageText}' limit {limit} offset {offset}").SingleOrDefault();
-                                photo = db.Query<string>($"SELECT \"Picture\" FROM \"Products\" WHERE \"TypeProduct\"='{messageText}' limit {limit} offset {offset}").SingleOrDefault();
+                                sql = db.Query<string>($"SELECT \"Product\" FROM \"Products\" limit {limit} offset {offset}").SingleOrDefault();
+                                photo = db.Query<string>($"SELECT \"Picture\" FROM \"Products\" limit {limit} offset {offset}").SingleOrDefault();
                                 Message Message = await botClient.SendPhotoAsync(
                                     chatId: chatId,
                                     photo: photo.ToString(),
@@ -126,84 +134,9 @@ namespace Core.Services
                                 offset++;
                             }
                             break;
-                    }
-                    /*
-                    if (messageText == "Пицца")
-                    {
-                        while (sql != null)
-                        {
-                            sql = db.Query<string>($"SELECT \"Product\" FROM \"Products\" WHERE \"TypeProduct\"='{messageText}' limit {limit} offset {offset}").SingleOrDefault();
-
-                            Message Message1 = await botClient.SendTextMessageAsync(
-                                chatId: chatId,
-                                text: sql.ToString(),
-                                replyMarkup: keyboard,
-                                cancellationToken: cancellationToken);
-                            offset++;
-                        }
-                    } else if (messageText == "Напитки")
-                    {
-                        while (sql != null)
-                        {
-                            sql = db.Query<string>($"SELECT \"Product\" FROM \"Products\" WHERE \"TypeProduct\"='{messageText}' limit {limit} offset {offset}").SingleOrDefault();
-
-                            Message Message1 = await botClient.SendTextMessageAsync(
-                                chatId: chatId,
-                                text: sql.ToString(),
-                                replyMarkup: keyboard,
-                                cancellationToken: cancellationToken);
-                            offset++;
-                        }
-                    } else if (messageText == "Десерты")
-                    {
-                        while (sql != null)
-                        {
-                            sql = db.Query<string>($"SELECT \"Product\" FROM \"Products\" WHERE \"TypeProduct\"='{messageText}' limit {limit} offset {offset}").SingleOrDefault();
-
-                            Message Message1 = await botClient.SendTextMessageAsync(
-                                chatId: chatId,
-                                text: sql.ToString(),
-                                replyMarkup: keyboard,
-                                cancellationToken: cancellationToken);
-                            offset++;
-                        }
-                    } else if (messageText == "Закуски")
-                    {
-                        while (sql != null)
-                        {
-                            sql = db.Query<string>($"SELECT \"Product\" FROM \"Products\" WHERE \"TypeProduct\"='{messageText}' limit {limit} offset {offset}").SingleOrDefault();
-
-                            Message Message1 = await botClient.SendTextMessageAsync(
-                                chatId: chatId,
-                                text: sql.ToString(),
-                                replyMarkup: keyboard,
-                                cancellationToken: cancellationToken);
-                            offset++;
-                        }
-                    } else
-                    {
-                        while (sql != null)
-                        {
-                            sql = db.Query<string>($"SELECT \"Product\" FROM \"Products\" limit {limit} offset {offset}").SingleOrDefault();
-
-                            Message Message1 = await botClient.SendTextMessageAsync(
-                                chatId: chatId,
-                                text: sql.ToString(),
-                                replyMarkup: keyboard,
-                                cancellationToken: cancellationToken);
-                            offset++;
-                        }
-                    }*/
-                       
-                        
+                    }                     
                     
-                    
-                    
-                    //dynamic sql = conn.Query("SELECT Product FROM Menu").ToString();
-                    
-                                             
                     db.Close();
-
                 }
                 catch (Exception ex)
                 {
@@ -211,7 +144,5 @@ namespace Core.Services
                 }
             }
         }
-
-
     }
 }
