@@ -1,9 +1,10 @@
 ﻿using app.Services;
 using Core;
+using Data.Repositories;
+using Data;
 using Core.Interfaces;
 using Core.Services;
-using Microsoft.EntityFrameworkCore;
-using Npgsql;
+
 var builder = WebApplication.CreateBuilder(args);
 
 using var host = Host.CreateDefaultBuilder(args)
@@ -12,6 +13,8 @@ using var host = Host.CreateDefaultBuilder(args)
         services.AddHostedService<TimedHostedService>();
         services.AddSingleton<ICallMenu, CallMenu>();
         services.AddSingleton<IRegistration, Registration>();
+        services.AddSingleton<IProductRepository, ProductRepository>();
+
     })
     .Build();
 

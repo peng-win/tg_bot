@@ -23,35 +23,42 @@ namespace Core.Services
             _configuration = configuration;                       
         }
         
-        public enum UserStatus
-        {
-            Active,
-            NotActive,
-            Blocked 
-        }
+        
         public async Task UserRegistration(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             var chatId = update.Message.Chat.Id;
             var messageText = update.Message.Text;
-            string Name = null;
-            string LastName = null;
-            string Patronymic = null;
-            string Phone = null;
-            using (IDbConnection db = new NpgsqlConnection(_configuration.GetConnectionString("PostreSQLConnection")))
+            /*
+            switch (messageText)
             {
-                try
-                {
-                    if (messageText == "/start")
-                    {
-                        
-                    }
+                case "/start":
                     
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Error: " + ex);
-                }
+                    break;
+            }*/
+                
+            if (messageText == "/start")
+            {
+               
+                await UserAnswer(botClient, update, cancellationToken);
             }
+            
         }        
+
+        public async Task UserAnswer(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+        {
+            var chatId = update.Message.Chat.Id;
+            Message message = await botClient.SendTextMessageAsync(
+                       chatId: chatId,
+                       text: "Введите имя, фамилию, отчество и номер телефона через пробел",
+                       cancellationToken: cancellationToken);
+            
+            var messageText = update.Message.Chat;
+
+            message = await botClient.SendTextMessageAsync(
+                        chatId: chatId,
+                        text: messageText.ToString(),
+                        cancellationToken: cancellationToken);
+
+        }
     }
 }

@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 
 namespace Core.Models
 {
-    public class Product
+    public class Enums
     {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Picture { get; set; }
+        public enum UserStatus
+        {
+            Active,
+            NotActive,
+            Blocked
+        }
     }
 }

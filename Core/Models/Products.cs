@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Core.Models
 {
-    public class Menu
+    public class Products
     {
         public Guid Id { get; set; }
         public string Product { get; set; }
-        public double Size { get; set; }
-        public double WeightInGrams { get; set; }
-        public decimal Price { get; set; }
+        public string TypeProduct { get; set; }
+        public string Description { get; set; }
+        public string Picture { get; set; }
     }
 }

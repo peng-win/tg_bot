@@ -55,13 +55,12 @@ namespace app.Services
         
         async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
-            var messageText = update.Message.Text;
 
             try
             {
-                //await _registration.UserRegistration(botClient, update, cancellationToken);
+                await _registration.UserRegistration(botClient, update, cancellationToken);
 
-                await _callMenu.CallMenuTask(botClient, update, cancellationToken);
+                //await _callMenu.CallMenuTask(botClient, update, cancellationToken);
             }
             catch (Exception ex)
             {
