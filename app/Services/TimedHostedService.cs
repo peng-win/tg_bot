@@ -9,8 +9,7 @@ using Core.Interfaces;
 using Dapper;
 
 namespace app.Services
-{
-  
+{  
     public class TimedHostedService : IHostedService
     {
         private readonly ILogger<TimedHostedService> _logger;
@@ -18,8 +17,7 @@ namespace app.Services
         private readonly ICallMenu _callMenu;
         private readonly IRegistration _registration;
         
-        private string[] args;
-        
+        private string[] args;        
 
         public TimedHostedService(ILogger<TimedHostedService> logger, IConfiguration configuration, ICallMenu callMenu, IRegistration registration)
         {
@@ -32,12 +30,10 @@ namespace app.Services
         public Task StartAsync(CancellationToken stoppingToken)
         {
             _logger.LogInformation("Timed Hosted Service running.");
-
           
             var token = _configuration.GetValue<string>("token");
 
             var bot = new TelegramBotClient(token);
-
 
             using var cts = new CancellationTokenSource();
 
@@ -49,13 +45,11 @@ namespace app.Services
             receiverOptions,
             cancellationToken: cts.Token);
 
-
             return Task.CompletedTask;
         }
         
         async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
-
             try
             {
                 await _registration.UserRegistration(botClient, update, cancellationToken);
@@ -66,29 +60,7 @@ namespace app.Services
             {
                 _logger.LogError(ex.Message);
             }
-
-
-
-        }
-        /*
-        public static void Registration(string chatId, string username)
-        {
-            try
-            {
-                var DB = new NpgsqlConnection("Host=localhost;Username=postgres;Password=4815162342;Database=tgbotdb");
-                DB.Open();
-                NpgsqlCommand regcmd = DB.CreateCommand();
-                regcmd.CommandText = "INSERT INTO RegUsers VALUES(@chatId, @username)";
-                regcmd.Parameters.AddWithValue("@chatId", chatId);
-                regcmd.Parameters.AddWithValue("@username", username);
-                regcmd.ExecuteNonQuery();
-                DB.Close();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("ERROR: " + ex);
-            }
-        }*/
+        }        
 
         Task HandleErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
         {
@@ -107,9 +79,6 @@ namespace app.Services
             _logger.LogInformation("Hosted Service is stopping.");            
 
             return Task.CompletedTask;
-        }
-
-        
-    }
-    
+        }        
+    }    
 }

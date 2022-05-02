@@ -19,13 +19,14 @@ namespace Data
         {
             _configuration = configuration;
         }
+        /*
         public IEnumerable<string> GetAllProducts()
         {
             using (IDbConnection db = new NpgsqlConnection(_configuration.GetConnectionString("PostreSQLConnection")))
             {
                 return db.Query<string>($"SELECT \"Products\".\"Product\" FROM \"Products\" WHERE \"Products\".\"Product\" = \"Menu\".\"Product\"");                
             }
-        }
+        }*/
 
         public IEnumerable<string> GetPizza()
         {

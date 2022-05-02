@@ -26,9 +26,8 @@ namespace Core.Services
         {
             var chatId = update.Message.Chat.Id;
             var messageText = update.Message.Text;
-            try
-            {
-                ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup(new[]
+
+            ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup(new[]
                 {
                         new []
                         {
@@ -41,9 +40,17 @@ namespace Core.Services
                             new KeyboardButton("Закуски")
                         }
                     })
-                {
-                    ResizeKeyboard = true
-                };
+            {
+                ResizeKeyboard = true
+            };
+
+            await botClient.SendTextMessageAsync(
+                    chatId: chatId,
+                    text: "Выберите пункт меню: ",
+                    replyMarkup: keyboard,
+                    cancellationToken: cancellationToken);
+            try
+            {             
                 switch (messageText)
                 {
                     case "Пицца":                        
@@ -61,10 +68,6 @@ namespace Core.Services
                     case "Закуски":
                         await GetSnacks(botClient, update, cancellationToken);
                         break;
-
-                    default:
-                        await GetAllProducts(botClient, update, cancellationToken);
-                        break;
                 }
             }
             catch (Exception ex)
@@ -73,25 +76,8 @@ namespace Core.Services
             }
 
         }
-        public async Task GetAllProducts(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
-        {
-            var messageText = update.Message.Text;
-
-            var chatId = update.Message.Chat.Id;
-
-            foreach (string s in _productRepository.GetAllProducts())
-            {
-                Message Message = await botClient.SendTextMessageAsync(
-                        chatId: chatId,
-                        text: s,
-                        cancellationToken: cancellationToken);
-            }
-            
-        }
         public async Task GetPizza(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
-            var messageText = update.Message.Text;
-
             var chatId = update.Message.Chat.Id;
             /*
             string size = _productRepository.GetSizePizza().FirstOrDefault();
@@ -111,8 +97,6 @@ namespace Core.Services
                         cancellationToken: cancellationToken);
             }
         }
-
-
         public async Task GetDesserts(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             var messageText = update.Message.Text;
@@ -127,9 +111,7 @@ namespace Core.Services
                         cancellationToken: cancellationToken);
             }
 
-        }
-
-        
+        }        
         public async Task GetSnacks(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             var messageText = update.Message.Text;
@@ -143,9 +125,7 @@ namespace Core.Services
                         text: s,
                         cancellationToken: cancellationToken);
             }
-
         }
-
         public async Task GetDrinks(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             var messageText = update.Message.Text;
@@ -159,24 +139,7 @@ namespace Core.Services
                         text: s,
                         cancellationToken: cancellationToken);
             }
-
-        }
-        public InlineKeyboardMarkup GenerateButtonsList(string arg)
-        {
-            var ikbList = new List<InlineKeyboardButton[]>();
-            foreach (string s in _productRepository.GetPizza())
-            {
-                var ikb = new List<InlineKeyboardButton>();
-
-                foreach (string size in _productRepository.GetSizePizza())
-                {
-                    ikb.Add(new InlineKeyboardButton(text: size));
-                }
-                ikbList.Add(ikb.ToArray());
-            }
-
-            return new InlineKeyboardMarkup(ikbList.ToArray());
-        }
+        }        
     }
 
 }
