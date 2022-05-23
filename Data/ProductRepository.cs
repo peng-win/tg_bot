@@ -30,23 +30,34 @@ namespace Data
 
         public IEnumerable<string> GetPizza()
         {
-            using (IDbConnection db = new NpgsqlConnection(_configuration.GetConnectionString("PostreSQLConnection")))
+            using (IDbConnection db = new NpgsqlConnection(_configuration.GetConnectionString("PostgreSQLConnection")))
             {
-                return db.Query<string>($"SELECT \"Products\".\"Product\" FROM \"Menu\", \"Products\" WHERE \"Products\".\"TypeProduct\" = 'Пицца' AND \"Products\".\"Product\" = \"Menu\".\"Product\"");
+                return db.Query<string>($"SELECT \"Products\".\"Product\" " +
+                    $"FROM \"Menu\", \"Products\" " +
+                    $"WHERE \"Products\".\"TypeProduct\" = 'Пицца' " +
+                    $"AND \"Products\".\"Product\" = \"Menu\".\"Product\"");
             }
         }
-
+        public IEnumerable<string> GetPictureOfPizza()
+        {
+            using (IDbConnection db = new NpgsqlConnection(_configuration.GetConnectionString("PostgreSQLConnection")))
+            {
+                return db.Query<string>($"SELECT \"Products\".\"Picture\" FROM \"Products\" WHERE \"Products\".\"TypeProduct\" = 'Пицца'");
+            }
+        }
         public IEnumerable<string> GetDesserts()
         {
-            using (IDbConnection db = new NpgsqlConnection(_configuration.GetConnectionString("PostreSQLConnection")))
+            using (IDbConnection db = new NpgsqlConnection(_configuration.GetConnectionString("PostgreSQLConnection")))
             {
-                return db.Query<string>($"SELECT \"Product\" FROM \"Products\" WHERE \"TypeProduct\" = 'Десерты'");
+                return db.Query<string>($"SELECT \"Product\" " +
+                    $"FROM \"Products\" " +
+                    $"WHERE \"TypeProduct\" = 'Десерты'");
             }
         }
 
         public IEnumerable<string> GetDrinks()
         {
-            using (IDbConnection db = new NpgsqlConnection(_configuration.GetConnectionString("PostreSQLConnection")))
+            using (IDbConnection db = new NpgsqlConnection(_configuration.GetConnectionString("PostgreSQLConnection")))
             {
                 return db.Query<string>($"SELECT \"Product\" FROM \"Products\" WHERE \"TypeProduct\" = 'Напитки'");
             }
@@ -54,7 +65,7 @@ namespace Data
 
         public IEnumerable<string> GetSnacks()
         {
-            using (IDbConnection db = new NpgsqlConnection(_configuration.GetConnectionString("PostreSQLConnection")))
+            using (IDbConnection db = new NpgsqlConnection(_configuration.GetConnectionString("PostgreSQLConnection")))
             {
                 return db.Query<string>($"SELECT \"Product\" FROM \"Products\" WHERE \"TypeProduct\" = 'Закуски'");
             }
@@ -62,7 +73,7 @@ namespace Data
 
         public IEnumerable<string> GetSizePizza()
         {
-            using (IDbConnection db = new NpgsqlConnection(_configuration.GetConnectionString("PostreSQLConnection")))
+            using (IDbConnection db = new NpgsqlConnection(_configuration.GetConnectionString("PostgreSQLConnection")))
             {
                 return db.Query<string>($"SELECT \"Menu\".\"Price\", \"Unit\" FROM \"Menu\", \"Products\", \"SizeProduct\" " +
                     $"WHERE \"Products\".\"TypeProduct\" = 'Пицца' " +

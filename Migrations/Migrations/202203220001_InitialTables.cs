@@ -3,7 +3,7 @@
 namespace Migrations.Migrations
 {
     [Migration(202203220001)]
-    public class InitialTables_202203220001 : Migration
+    public class _202203220001_InitialTables : Migration
     {
         public override void Down()
         {
@@ -75,8 +75,6 @@ namespace Migrations.Migrations
                 .WithColumn("Description").AsString(1000).Nullable()
                 .WithColumn("PaymentType").AsString(20).NotNullable().ForeignKey("PaymentType", "Type")
                 .WithColumn("Status").AsString(20).NotNullable();
-
-
         }
     }
 }

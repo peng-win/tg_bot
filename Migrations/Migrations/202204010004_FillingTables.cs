@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Migrations.Migrations
 {
     [Migration(202204010004)]
-    public class FillingTables_202204010004 : Migration
+    public class _202204010004_FillingTables : Migration
     {
         public override void Down()
         {

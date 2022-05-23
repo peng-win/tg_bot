@@ -3,7 +3,7 @@
 namespace Migrations.Migrations
 {
     [Migration(202203290002)]
-    public class UpdateTables_202203290002 : Migration
+    public class _202203290002_UpdateTables : Migration
     {
         public override void Down()
         {

@@ -8,7 +8,7 @@ using FluentMigrator;
 namespace Migrations.Migrations
 {
     [Migration(202204030005)]
-    public class UpdateTables_202204030005 : Migration
+    public class _202204030005_UpdateTables : Migration
     {
         public override void Down()
         {
