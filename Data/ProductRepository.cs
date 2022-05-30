@@ -32,10 +32,9 @@ namespace Data
         {
             using (IDbConnection db = new NpgsqlConnection(_configuration.GetConnectionString("PostgreSQLConnection")))
             {
-                return db.Query<string>($"SELECT \"Products\".\"Product\" " +
-                    $"FROM \"Menu\", \"Products\" " +
-                    $"WHERE \"Products\".\"TypeProduct\" = 'Пицца' " +
-                    $"AND \"Products\".\"Product\" = \"Menu\".\"Product\"");
+                return db.Query<string>($"SELECT \"Product\" " +
+                    $"FROM \"Products\" " +
+                    $"WHERE \"TypeProduct\" = 'Пицца' ");
             }
         }
         public IEnumerable<string> GetPictureOfPizza()

@@ -1,5 +1,4 @@
 ﻿using Telegram.Bot;
-using Telegram.Bot.Extensions.Polling;
 using Telegram.Bot.Types;
 using Core.Services;
 using Dapper;
@@ -10,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using System.Data;
 using Data.Repositories;
 using System.Linq;
+using Telegram.Bot.Types.Enums;
 
 namespace Core.Services
 {
@@ -47,19 +47,22 @@ namespace Core.Services
             {
                 ResizeKeyboard = true
             };
-
-            await botClient.SendTextMessageAsync(
+            if (messageText.ToLower() == "/menu")
+            {
+                await botClient.SendTextMessageAsync(
                     chatId: chatId,
                     text: "Выберите пункт меню: ",
                     replyMarkup: keyboard,
-                    cancellationToken: cancellationToken);            
+                    cancellationToken: cancellationToken);
+            }                   
 
             await SelectMenuItem(botClient, update, cancellationToken);
         }
-
+        
         public async Task SelectMenuItem(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             var messageText = update.Message.Text;
+            var chatId = update.Message.Chat.Id;
 
             try
             {
@@ -70,7 +73,11 @@ namespace Core.Services
                         {
                             await _registration.UserRegistration(botClient, update, cancellationToken);
                         }
-                        else await GetPizza(botClient, update, cancellationToken);
+                        else await botClient.SendTextMessageAsync(
+                                chatId: chatId,
+                                text: "Выберите товар:",
+                                replyMarkup: GetPizza(),
+                                cancellationToken: cancellationToken);
                         break;
 
                     case "Напитки":
@@ -78,7 +85,11 @@ namespace Core.Services
                         {
                             await _registration.UserRegistration(botClient, update, cancellationToken);
                         }
-                        else await GetDrinks(botClient, update, cancellationToken);
+                        else await botClient.SendTextMessageAsync(
+                                chatId: chatId,
+                                text: "Выберите товар:",
+                                replyMarkup: GetDrinks(),
+                                cancellationToken: cancellationToken);
                         break;
 
                     case "Десерты":
@@ -86,7 +97,11 @@ namespace Core.Services
                         {
                             await _registration.UserRegistration(botClient, update, cancellationToken);
                         }
-                        else await GetDesserts(botClient, update, cancellationToken);
+                        else await botClient.SendTextMessageAsync(
+                                chatId: chatId,
+                                text: "Выберите товар:",
+                                replyMarkup: GetDesserts(),
+                                cancellationToken: cancellationToken);
                         break;
 
                     case "Закуски":
@@ -94,79 +109,86 @@ namespace Core.Services
                         {
                             await _registration.UserRegistration(botClient, update, cancellationToken);
                         }
-                        else await GetSnacks(botClient, update, cancellationToken);
+                        else await botClient.SendTextMessageAsync(
+                                chatId: chatId,
+                                text: "Выберите товар:",
+                                replyMarkup: GetSnacks(),
+                                cancellationToken: cancellationToken);
                         break;
-                }
+                }                
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Error: " + ex);
             }
-        }
-        public async Task GetPizza(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+        }        
+        
+        private InlineKeyboardMarkup GetDesserts()
         {
-            var chatId = update.Message.Chat.Id;
-            
-            InlineKeyboardMarkup inlineKeyboard = new(new[]
-            {
-                new []
-                {
-                    InlineKeyboardButton.WithCallbackData(text: "Подробнее", callbackData: "11"),
-                },
-            });
-
-            foreach (string s in _productRepository.GetPizza())
-            {
-                Message Message = await botClient.SendTextMessageAsync(
-                        chatId: chatId,
-                        text: s,
-                        replyMarkup: inlineKeyboard,
-                        cancellationToken: cancellationToken);
-            }
-        }
-        public async Task GetDesserts(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
-        {
-            var messageText = update.Message.Text;
-
-            var chatId = update.Message.Chat.Id;
-
+            List<InlineKeyboardButton> buttons = new List<InlineKeyboardButton>();
             foreach (string s in _productRepository.GetDesserts())
             {
-                Message Message = await botClient.SendTextMessageAsync(
-                        chatId: chatId,
-                        text: s,
-                        cancellationToken: cancellationToken);
+                buttons.Add(new InlineKeyboardButton(s) { Text = s, CallbackData = $"callback1" });
             }
 
-        }        
-        public async Task GetSnacks(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+            var menu = new List<InlineKeyboardButton[]>();
+            for (int i = 0; i < buttons.Count; i++)
+            {
+                menu.Add(new[] { buttons[i] });
+            }
+
+            return new InlineKeyboardMarkup(menu.ToArray());
+
+        }
+        private InlineKeyboardMarkup GetSnacks()
         {
-            var messageText = update.Message.Text;
-
-            var chatId = update.Message.Chat.Id;
-
+            List<InlineKeyboardButton> buttons = new List<InlineKeyboardButton>();
             foreach (string s in _productRepository.GetSnacks())
             {
-                Message Message = await botClient.SendTextMessageAsync(
-                        chatId: chatId,
-                        text: s,
-                        cancellationToken: cancellationToken);
+                buttons.Add(new InlineKeyboardButton(s) { Text = s, CallbackData = $"callback1" });
             }
+
+            var menu = new List<InlineKeyboardButton[]>();
+            for (int i = 0; i < buttons.Count; i++)
+            {
+                menu.Add(new[] { buttons[i] });
+            }
+
+            return new InlineKeyboardMarkup(menu.ToArray());
         }
-        public async Task GetDrinks(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+        private InlineKeyboardMarkup GetDrinks()
         {
-            var messageText = update.Message.Text;
-
-            var chatId = update.Message.Chat.Id;
-
+            List<InlineKeyboardButton> buttons = new List<InlineKeyboardButton>();
             foreach (string s in _productRepository.GetDrinks())
             {
-                Message Message = await botClient.SendTextMessageAsync(
-                        chatId: chatId,
-                        text: s,
-                        cancellationToken: cancellationToken);
+                buttons.Add(new InlineKeyboardButton(s) { Text = s, CallbackData = $"callback1" });
             }
-        }        
+
+            var menu = new List<InlineKeyboardButton[]>();
+            for (int i = 0; i < buttons.Count; i++)
+            {
+                menu.Add(new[] { buttons[i] });
+            }
+
+            return new InlineKeyboardMarkup(menu.ToArray());
+        }       
+        
+        private InlineKeyboardMarkup GetPizza()
+        {
+            List<InlineKeyboardButton> buttons = new List<InlineKeyboardButton>();
+            foreach (string s in _productRepository.GetPizza())
+            {
+                buttons.Add(new InlineKeyboardButton(s) { Text = s, CallbackData = $"callback1" });
+            }
+
+            var menu = new List<InlineKeyboardButton[]>();
+            for (int i = 0; i < buttons.Count; i++)
+            {
+                menu.Add(new[] {buttons[i]});
+            }
+
+            return new InlineKeyboardMarkup(menu.ToArray());
+        }
     }
 
 }

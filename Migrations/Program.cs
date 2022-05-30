@@ -24,7 +24,7 @@ namespace Migrations
 				.ConfigureRunner(rb => rb
 					.AddPostgres11_0()
 					.WithGlobalConnectionString(connectionString)
-					.ScanIn(typeof(_202205200009_UpdateUser).Assembly).For.Migrations())
+					.ScanIn(typeof(_202205270010).Assembly).For.Migrations())
 				.AddLogging(lb => lb.AddFluentMigratorConsole())
 				.BuildServiceProvider(false);
         }
