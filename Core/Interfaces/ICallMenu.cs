@@ -11,5 +11,6 @@ namespace Core.Interfaces
     public interface ICallMenu
     {
         Task CallMenuTask(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken);
+        Task SelectMenuItem(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken);
     }
 }

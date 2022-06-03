@@ -14,6 +14,8 @@ using var host = Host.CreateDefaultBuilder(args)
         services.AddSingleton<ICallMenu, CallMenu>();
         services.AddSingleton<IRegistration, Registration>();
         services.AddSingleton<IProductRepository, ProductRepository>();
+        services.AddSingleton<IUserRepository, UserRepository>();
+        services.AddSingleton<IAuthentication, Authentication>();
 
     })
     .Build();

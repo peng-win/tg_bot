@@ -9,7 +9,6 @@ namespace Data.Repositories
 {
     public interface IProductRepository
     {
-       // IEnumerable<string> GetAllProducts();
         IEnumerable<string> GetPizza();
         IEnumerable<string> GetDesserts();
         IEnumerable<string> GetDrinks();

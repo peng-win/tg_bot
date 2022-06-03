@@ -6,7 +6,7 @@ using Core.Models;
 namespace Migrations.Migrations
 {
     [Migration(200204010003)]
-    public class FillingTables_202204010003 : Migration
+    public class _202204010003_FillingTables : Migration
     {
         public override void Down()
         {
