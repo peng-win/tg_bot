@@ -27,12 +27,66 @@ namespace Core.Services
         }
         
         public async Task CallMenuTask(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+        {            
+            var handler = update.Type switch
+            {                
+                UpdateType.Message => BotOnMessageReceived(botClient, update, cancellationToken),
+                UpdateType.CallbackQuery => BotOnCallbackQueryReceived(botClient, update.CallbackQuery!),
+                _ => UnknownUpdateHandlerAsync(botClient, update)
+            };
+
+            try
+            {
+                await handler;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex);
+            }
+        }
+        private async Task BotOnMessageReceived(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             var messageText = update.Message.Text;
             var chatId = update.Message.Chat.Id;
-
-            ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup(new[]
+            Console.WriteLine($"Receive message type: {update.Message.Type}");
+            if (update.Message.Type != MessageType.Text)
+                return;
+            var action = update.Message.Text!.Split(' ')[0] switch
             {
+                "Пицца" => SendInlineKeyboard(botClient, update.Message),
+                "Напитки" => SendInlineKeyboard(botClient, update.Message),
+                "Десерты" => SendInlineKeyboard(botClient, update.Message),
+                "Закуски" => SendInlineKeyboard(botClient, update.Message),
+                "/menu" => SendReplyKeyboard(botClient, update.Message),
+                _ => Usage(botClient, update.Message)
+            };
+
+            static async Task<Message> SendInlineKeyboard(ITelegramBotClient botClient, Message message)
+            {
+                await botClient.SendChatActionAsync(message.Chat.Id, ChatAction.Typing);
+
+                // Simulate longer running task
+                await Task.Delay(500);
+
+                List<InlineKeyboardButton> buttons = new List<InlineKeyboardButton>();
+                buttons.Add(new InlineKeyboardButton("d") { Text = "d", CallbackData = $"call" });
+                var menu = new List<InlineKeyboardButton[]>();
+                for (int i = 0; i < buttons.Count; i++)
+                {
+                    menu.Add(new[] { buttons[i] });
+                }
+
+                InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup(menu.ToArray());
+
+                return await botClient.SendTextMessageAsync(chatId: message.Chat.Id,
+                                                            text: "Choose",
+                                                            replyMarkup: inlineKeyboardMarkup);
+            }
+
+            static async Task<Message> SendReplyKeyboard(ITelegramBotClient botClient, Message message)
+            {
+                ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup(new[]
+                {
                 new []
                 {
                     new KeyboardButton("Пицца"),
@@ -43,85 +97,72 @@ namespace Core.Services
                     new KeyboardButton("Десерты"),
                     new KeyboardButton("Закуски")
                 }
-            })
-            {
-                ResizeKeyboard = true
-            };
-            if (messageText.ToLower() == "/menu")
-            {
-                await botClient.SendTextMessageAsync(
-                    chatId: chatId,
-                    text: "Выберите пункт меню: ",
-                    replyMarkup: keyboard,
-                    cancellationToken: cancellationToken);
-            }                   
-
-            await SelectMenuItem(botClient, update, cancellationToken);
-        }
-        
-        public async Task SelectMenuItem(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
-        {
-            var messageText = update.Message.Text;
-            var chatId = update.Message.Chat.Id;
-
-            try
-            {
-                switch (messageText)
+                })
                 {
-                    case "Пицца":
-                        if (Authentication.isAuthorization == false)
-                        {
-                            await _registration.UserRegistration(botClient, update, cancellationToken);
-                        }
-                        else await botClient.SendTextMessageAsync(
-                                chatId: chatId,
-                                text: "Выберите товар:",
-                                replyMarkup: GetPizza(),
-                                cancellationToken: cancellationToken);
-                        break;
-
-                    case "Напитки":
-                        if (Authentication.isAuthorization == false)
-                        {
-                            await _registration.UserRegistration(botClient, update, cancellationToken);
-                        }
-                        else await botClient.SendTextMessageAsync(
-                                chatId: chatId,
-                                text: "Выберите товар:",
-                                replyMarkup: GetDrinks(),
-                                cancellationToken: cancellationToken);
-                        break;
-
-                    case "Десерты":
-                        if (Authentication.isAuthorization == false)
-                        {
-                            await _registration.UserRegistration(botClient, update, cancellationToken);
-                        }
-                        else await botClient.SendTextMessageAsync(
-                                chatId: chatId,
-                                text: "Выберите товар:",
-                                replyMarkup: GetDesserts(),
-                                cancellationToken: cancellationToken);
-                        break;
-
-                    case "Закуски":
-                        if (Authentication.isAuthorization == false)
-                        {
-                            await _registration.UserRegistration(botClient, update, cancellationToken);
-                        }
-                        else await botClient.SendTextMessageAsync(
-                                chatId: chatId,
-                                text: "Выберите товар:",
-                                replyMarkup: GetSnacks(),
-                                cancellationToken: cancellationToken);
-                        break;
-                }                
+                    ResizeKeyboard = true
+                };
+                
+                 return await botClient.SendTextMessageAsync(
+                        chatId: message.Chat.Id,
+                        text: "Выберите пункт меню: ",
+                        replyMarkup: keyboard);
+                
             }
-            catch (Exception ex)
+
+            static async Task<Message> Usage(ITelegramBotClient botClient, Message message)
             {
-                Console.WriteLine("Error: " + ex);
+                const string usage = "Usage:\n" +
+                                     "/inline   - send inline keyboard\n" +
+                                     "/keyboard - send custom keyboard\n" +
+                                     "/remove   - remove custom keyboard\n" +
+                                     "/photo    - send a photo\n" +
+                                     "/request  - request location or contact";
+
+                return await botClient.SendTextMessageAsync(chatId: message.Chat.Id,
+                                                            text: usage,
+                                                            replyMarkup: new ReplyKeyboardRemove());
             }
-        }        
+
+            switch (messageText)
+            {/*
+                case "Пицца":                    
+                    if (Authentication.isAuthorization == false)
+                    {
+                        await _registration.UserRegistration(botClient, update, cancellationToken);
+                    }
+                    else await botClient.SendTextMessageAsync(
+                            chatId: chatId,
+                            text: "Выберите товар:",
+                            replyMarkup: GetSomeKeyboard(),
+                            cancellationToken: cancellationToken);
+                    break;
+                */
+            }
+        }
+
+        private static async Task BotOnCallbackQueryReceived(ITelegramBotClient botClient, CallbackQuery callbackQuery)
+        {
+            await botClient.AnswerCallbackQueryAsync(
+                callbackQueryId: callbackQuery.Id,
+                text: $"Received {callbackQuery.Data}");
+
+            await botClient.SendTextMessageAsync(
+                chatId: callbackQuery.Message!.Chat.Id,
+                text: $"Received {callbackQuery.Data}");
+        }
+
+        private InlineKeyboardMarkup GetSomeKeyboard()
+        {
+            List<InlineKeyboardButton> buttons = new List<InlineKeyboardButton>();
+            buttons.Add(new InlineKeyboardButton("d") { Text = "d", CallbackData = $"call"});
+            var menu = new List<InlineKeyboardButton[]>();
+            for (int i = 0; i < buttons.Count; i++)
+            {
+                menu.Add(new[] { buttons[i] });
+            }
+
+            return new InlineKeyboardMarkup(menu.ToArray());
+        }
         
         private InlineKeyboardMarkup GetDesserts()
         {
@@ -178,7 +219,7 @@ namespace Core.Services
             List<InlineKeyboardButton> buttons = new List<InlineKeyboardButton>();
             foreach (string s in _productRepository.GetPizza())
             {
-                buttons.Add(new InlineKeyboardButton(s) { Text = s, CallbackData = $"callback1" });
+                buttons.Add(new InlineKeyboardButton(s) { Text = s, CallbackData = $"{s}" });
             }
 
             var menu = new List<InlineKeyboardButton[]>();
@@ -188,6 +229,11 @@ namespace Core.Services
             }
 
             return new InlineKeyboardMarkup(menu.ToArray());
+        }
+        private static Task UnknownUpdateHandlerAsync(ITelegramBotClient botClient, Update update)
+        {
+            Console.WriteLine($"Unknown update type: {update.Type}");
+            return Task.CompletedTask;
         }
     }
 

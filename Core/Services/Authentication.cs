@@ -35,8 +35,8 @@ namespace Core.Services
 
         public async Task UserAuthentication(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
-            userNickName = update.Message.From.Username;
-
+            userNickName = update.Message?.From.Username;
+           
             foreach (string n in _userRepository.GetNickName())
             {
                 if (n == userNickName)
@@ -47,12 +47,10 @@ namespace Core.Services
                 else
                     isAuthorization = false;
             }
-
-            if (isAuthorization == true)
+            if (isAuthorization == false)
             {
-                await _callMenu.CallMenuTask(botClient, update, cancellationToken);                
+                await _registration.UserRegistration(botClient, update, cancellationToken);
             }
-            else await _registration.UserRegistration(botClient, update, cancellationToken);
         }
     }
 }
