@@ -19,14 +19,6 @@ namespace Data
         {
             _configuration = configuration;
         }
-        /*
-        public IEnumerable<string> GetAllProducts()
-        {
-            using (IDbConnection db = new NpgsqlConnection(_configuration.GetConnectionString("PostreSQLConnection")))
-            {
-                return db.Query<string>($"SELECT \"Products\".\"Product\" FROM \"Products\" WHERE \"Products\".\"Product\" = \"Menu\".\"Product\"");                
-            }
-        }*/
 
         public IEnumerable<string> GetPizza()
         {
@@ -36,14 +28,8 @@ namespace Data
                     $"FROM \"Products\" " +
                     $"WHERE \"TypeProduct\" = 'Пицца' ");
             }
-        }
-        public IEnumerable<string> GetPictureOfPizza()
-        {
-            using (IDbConnection db = new NpgsqlConnection(_configuration.GetConnectionString("PostgreSQLConnection")))
-            {
-                return db.Query<string>($"SELECT \"Products\".\"Picture\" FROM \"Products\" WHERE \"Products\".\"TypeProduct\" = 'Пицца'");
-            }
-        }
+        }        
+       
         public IEnumerable<string> GetDesserts()
         {
             using (IDbConnection db = new NpgsqlConnection(_configuration.GetConnectionString("PostgreSQLConnection")))
@@ -67,17 +53,6 @@ namespace Data
             using (IDbConnection db = new NpgsqlConnection(_configuration.GetConnectionString("PostgreSQLConnection")))
             {
                 return db.Query<string>($"SELECT \"Product\" FROM \"Products\" WHERE \"TypeProduct\" = 'Закуски'");
-            }
-        }
-
-        public IEnumerable<string> GetSizePizza()
-        {
-            using (IDbConnection db = new NpgsqlConnection(_configuration.GetConnectionString("PostgreSQLConnection")))
-            {
-                return db.Query<string>($"SELECT \"Menu\".\"Price\", \"Unit\" FROM \"Menu\", \"Products\", \"SizeProduct\" " +
-                    $"WHERE \"Products\".\"TypeProduct\" = 'Пицца' " +
-                    $"AND \"Menu\".\"Product\" = \"Products\".\"Product\"" +
-                    $"AND \"Menu\".\"Size\" = \"SizeProduct\".\"Size\"");
             }
         }
     }

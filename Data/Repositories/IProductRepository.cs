@@ -13,6 +13,5 @@ namespace Data.Repositories
         IEnumerable<string> GetDesserts();
         IEnumerable<string> GetDrinks();
         IEnumerable<string> GetSnacks();
-        IEnumerable<string> GetSizePizza();
     }
 }

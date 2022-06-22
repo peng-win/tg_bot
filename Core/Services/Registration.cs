@@ -25,24 +25,11 @@ namespace Core.Services
         public async Task UserRegistration(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             var messageText = update.Message.Text;
-
-            ReplyKeyboardMarkup menuButtonKeyboard = new ReplyKeyboardMarkup(new[]
-                   {
-                            new[]
-                            {
-                                new KeyboardButton("/menu")
-                            }
-                        })
-            {
-                ResizeKeyboard = true
-            };
+            
 
             if (messageText.ToLower() == "/start" || Authentication.isAuthorization == false)
             {
-                await botClient.SendTextMessageAsync(
-                    chatId: update.Message.Chat.Id,
-                    text: "Добро пожаловать!",
-                    cancellationToken: cancellationToken);
+                
                 await botClient.SendTextMessageAsync(
                     chatId: update.Message.Chat.Id,
                     text: "Введите фамилию, имя и номер телефона через пробел",

@@ -54,7 +54,9 @@ namespace app.Services
             try
             {
                 //await _authentication.UserAuthentication(botClient, update, cancellationToken);
-                await _callMenu.CallMenuTask(botClient, update, cancellationToken);
+                
+                    await _callMenu.CallMenuTask(botClient, update, cancellationToken);
+                
             }
             catch (Exception ex)
             {

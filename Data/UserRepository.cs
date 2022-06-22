@@ -21,7 +21,8 @@ namespace Data
         }
         public IEnumerable<string> GetPhone()
         {
-            using (IDbConnection db = new NpgsqlConnection(_configuration.GetConnectionString("PostgreSQLConnection")))
+            using (IDbConnection db = new NpgsqlConnection
+                (_configuration.GetConnectionString("PostgreSQLConnection")))
             {
                 return db.Query<string>($"SELECT \"Phone\" FROM \"User\"");
             }
