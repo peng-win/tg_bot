@@ -16,27 +16,34 @@ namespace Core.Services
     public class Registration : IRegistration
     {
         private readonly IConfiguration _configuration;
+        
+        public string address;
+        public string phone;
 
-        public Registration(IConfiguration configuration,  IUserRepository userRepository)
+        public Registration(IConfiguration configuration)
         {
-            _configuration = configuration;
+            _configuration = configuration;           
         }
 
-        public async Task UserRegistration(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+        public async Task UserRegistration(ITelegramBotClient botClient, CallbackQuery callbackQuery)
         {
-            var messageText = update.Message.Text;
-            
 
-            if (messageText.ToLower() == "/start" || Authentication.isAuthorization == false)
+            ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup(new[]
+                {
+                new []
+                {
+                    new KeyboardButton("На дом"),
+                    new KeyboardButton("Самовывоз")
+                }
+                })
             {
-                
-                await botClient.SendTextMessageAsync(
-                    chatId: update.Message.Chat.Id,
-                    text: "Введите фамилию, имя и номер телефона через пробел",
-                    cancellationToken: cancellationToken);
-                
-            }
-            await UserAnswer(botClient, update, cancellationToken);
+                ResizeKeyboard = true
+            };
+            await botClient.SendTextMessageAsync(
+                    chatId: callbackQuery.Message.Chat.Id,
+                    text: "Выберите тип доставки:",
+                    replyMarkup: keyboard);
+            
         }        
         private async Task UserAnswer(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {      

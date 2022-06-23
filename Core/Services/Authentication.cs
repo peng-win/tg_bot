@@ -47,10 +47,10 @@ namespace Core.Services
                 else
                     isAuthorization = false;
             }
-            if (isAuthorization == false)
-            {
-                await _registration.UserRegistration(botClient, update, cancellationToken);
-            }
+            //if (isAuthorization == false)
+            //{
+            //    await _registration.UserRegistration(botClient, update, cancellationToken);
+            //}
         }
     }
 }

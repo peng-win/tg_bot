@@ -10,7 +10,7 @@ namespace Core.Interfaces
 {
     public interface IRegistration
     {
-        Task UserRegistration(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken);
+        Task UserRegistration(ITelegramBotClient botClient, CallbackQuery callbackQuery);
         //Task UserAuthentication(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken);
 
        // Task UserAnswer(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken);

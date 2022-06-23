@@ -82,7 +82,6 @@ namespace Core.Services
                                 InlineKeyboardButton.WithCallbackData(text: "Удалить", callbackData: $"callbackdelete:{s}"),
                             }
                         });
-
                         
                         var price = db.Query<decimal>($"SELECT \"Price\" FROM \"Menu\" WHERE \"Id\" = '{s}'").FirstOrDefault();
                         var name = db.Query<string>($"SELECT \"Product\" FROM \"Menu\" WHERE \"Id\" = '{s}'").FirstOrDefault();
@@ -112,7 +111,6 @@ namespace Core.Services
                 }
                 
             }            
-
             async Task<Message> SendInlineKeyboardPizza(ITelegramBotClient botClient, Message message)
             {
                 await botClient.SendChatActionAsync(message.Chat.Id, ChatAction.Typing);
@@ -138,7 +136,6 @@ namespace Core.Services
                                                             text: "Выберите товар: ",
                                                             replyMarkup: inlineKeyboardMarkup);
             }
-
             async Task<Message> SendInlineKeyboardDrinks(ITelegramBotClient botClient, Message message)
             {
                 await botClient.SendChatActionAsync(message.Chat.Id, ChatAction.Typing);
@@ -164,7 +161,6 @@ namespace Core.Services
                                                             text: "Выберите товар: ",
                                                             replyMarkup: inlineKeyboardMarkup);
             }
-
             async Task<Message> SendInlineKeyboardDesserts(ITelegramBotClient botClient, Message message)
             {
                 await botClient.SendChatActionAsync(message.Chat.Id, ChatAction.Typing);
@@ -215,7 +211,6 @@ namespace Core.Services
                                                             text: "Выберите товар: ",
                                                             replyMarkup: inlineKeyboardMarkup);
             }
-
             static async Task<Message> SendReplyKeyboard(ITelegramBotClient botClient, Message message)
             {
                 ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup(new[]
@@ -238,8 +233,8 @@ namespace Core.Services
                 {
                     ResizeKeyboard = true
                 };
-                
-                 return await botClient.SendTextMessageAsync(
+
+                return await botClient.SendTextMessageAsync(
                         chatId: message.Chat.Id,
                         text: "Выберите пункт меню: ",
                         replyMarkup: keyboard);
@@ -249,11 +244,8 @@ namespace Core.Services
             static async Task<Message> Usage(ITelegramBotClient botClient, Message message)
             {
                 const string usage = "Usage:\n" +
-                                     "/start    - сделать заказ\n" +
-                                     "/menu     - вывести меню\n" +
-                                     "/remove   - remove custom keyboard\n" +
-                                     "/photo    - send a photo\n" +
-                                     "/request  - request location or contact";
+                                     "/start - сделать заказ\n" +
+                                     "/menu - вывести меню";
 
                 return await botClient.SendTextMessageAsync(chatId: message.Chat.Id,
                                                             text: usage,
@@ -267,9 +259,9 @@ namespace Core.Services
             callbackvalue = callbackQuery.Data.Substring(0, d);
             key = callbackQuery.Data.Substring(d+1);
 
-            await botClient.AnswerCallbackQueryAsync(
-                callbackQueryId: callbackQuery.Id,
-                text: $"{key}");
+            //await botClient.AnswerCallbackQueryAsync(
+            //    callbackQueryId: callbackQuery.Id,
+            //    text: $"{key}");
 
             switch (callbackvalue)
             {
@@ -297,11 +289,9 @@ namespace Core.Services
                                     chatId: callbackQuery.Message!.Chat.Id,
                                     text: $"Товар удален");
                     break;
-                case "callbackpay":
-
-                    break;
-
-                
+                //case "callbackpay":
+                //    await _registration.UserRegistration(botClient, callbackQuery);
+                //    break;                
             }
         }
 
@@ -401,14 +391,6 @@ namespace Core.Services
                 return db.Query<string>($"SELECT \"Product\" FROM \"Menu\" WHERE \"Id\" = '{key}'");
             }
         }
-
-        //public IEnumerable<Guid> GetId(CallbackQuery callbackQuery)
-        //{
-        //    using (IDbConnection db = new NpgsqlConnection(_configuration.GetConnectionString("PostgreSQLConnection")))
-        //    {
-        //        return db.Query<Guid>($"SELECT \"Id\" FROM \"Menu\" WHERE \"Id\" = '{callbackQuery.Data}'");
-        //    }
-        //}
         
         private static Task UnknownUpdateHandlerAsync(ITelegramBotClient botClient, Update update)
         {
@@ -416,5 +398,4 @@ namespace Core.Services
             return Task.CompletedTask;
         }
     }
-
 }
