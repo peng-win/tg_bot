@@ -16,16 +16,13 @@ namespace app.Services
         private readonly IConfiguration _configuration;
         private readonly ICallMenu _callMenu;
         private readonly IRegistration _registration;
-        private readonly IAuthentication _authentication;
-        
 
-        public TimedHostedService(ILogger<TimedHostedService> logger, IConfiguration configuration, ICallMenu callMenu, IRegistration registration, IAuthentication authentication)
+        public TimedHostedService(ILogger<TimedHostedService> logger, IConfiguration configuration, ICallMenu callMenu, IRegistration registration)
         {
             _registration = registration;
             _callMenu = callMenu; 
             _logger = logger;
             _configuration = configuration;
-            _authentication = authentication;
         }
 
         public Task StartAsync(CancellationToken stoppingToken)
@@ -55,7 +52,7 @@ namespace app.Services
             {
                 //await _authentication.UserAuthentication(botClient, update, cancellationToken);
                 
-                    await _callMenu.CallMenuTask(botClient, update, cancellationToken);
+                 await _callMenu.CallMenuTask(botClient, update, cancellationToken);
                 
             }
             catch (Exception ex)
